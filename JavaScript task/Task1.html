@@ -21,15 +21,11 @@
   //监听button的点击事件，浏览器兼容
   if(addEventListener){
   	button.addEventListener('click',function(){
-  	    api_display.innerHTML=api_input.value})
-  }
-  	else {
-  		button.attachEvent('onclick',function(){
-  			api_display.innerHTML=api_input.value})
-  	}
-  
-
-
+  	   api_display.innerHTML=api_input.value})
+  }else {
+    button.attachEvent('onclick',function(){
+      api_display.innerHTML=api_input.value})
+    }
 })();
 
 </script>
