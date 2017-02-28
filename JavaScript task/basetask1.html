@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>basetask1</title>
+  <style type="text/css">
+    #content{
+      list-style-type: none;
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    #content li{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50px;
+      height: 50px;
+      background-color: skyblue;
+      color: white;
+      margin: 0 5px 5px 0;
+    }
+  </style>
+</head>
+<body>
+<input type="text" id="input">
+<button id="left-in">左侧入</button>
+<button id="right-in" style="margin-right:100px;">右侧入</button>
+<button id="left-out">左侧出</button>
+<button id="right-out">右侧出</button>
+<ul id="content">
+</ul>
+<script type="text/javascript">
+(function(){
+  var in_or_out=function(obj){
+    this.arr=obj||[]
+    this.init(this.arr)
+  }
+
+  in_or_out.prototype={
+        left_in:function(){
+        var ele=this.get_value()
+        this.append_render(ele,'left')
+
+      },
+
+      right_in:function(){
+        var ele=this.get_value()
+        this.append_render(ele,'right')
+      },
+
+      left_out:function(){
+        this.delete_render('left')
+      },
+
+      right_out:function(){
+        this.delete_render('right')
+      },
+
+      append_render:function(ele,dir){
+        var content=document.getElementById('content')
+          var l=document.createElement('li')
+          l.innerHTML=ele
+          if(dir==='left'){
+            content.insertBefore(l,content.childNodes[0])
+          }else if(dir==='right'){
+            content.appendChild(l)
+          }
+      },
+      delete_render:function(dir){
+        var content=document.getElementById('content')
+        if(dir==='left' && content.firstChild){
+          let val=content.firstChild.textContent
+          content.removeChild(content.firstChild)
+          alert(`左侧删除了：${val}`)
+        }else if(dir==='right' && content.lastChild){
+          let val=content.lastChild.textContent
+          content.removeChild(content.lastChild)
+          alert(`右侧删除了：${val}`)
+        }else{
+          alert(`删上瘾了？？`)
+        }
+      },
+
+      get_value:function(){
+        var inp=document.getElementById('input')
+        var value=inp.value
+        inp.value=''
+        return value
+      },
+
+      add_event:function(content){
+        content.addEventListener('click',function(e){
+          var eve=e.target
+          content.removeChild(eve)
+        })
+      },
+
+      render:function(arr){
+        var content=document.getElementById('content')
+          if(content.firstChild.nodeType===3){
+            content.removeChild(content.firstChild)
+          }
+        for(var i=0;i<arr.length;i++){
+          var l=document.createElement('li')
+          l.innerHTML=arr[i]
+          content.appendChild(l)
+        }
+       this.add_event(content)
+      },
+
+      init:function(arr){
+        this.render(arr)
+        var self=this
+        var btn_left_in=document.getElementById('left-in')
+        var btn_right_in=document.getElementById('right-in')
+        var btn_left_out=document.getElementById('left-out')
+        var btn_right_out=document.getElementById('right-out')
+        btn_left_in.addEventListener('click',function(){self.left_in()})
+        btn_right_in.addEventListener('click',function(){self.right_in()})
+        btn_left_out.addEventListener('click',function(){self.left_out()})
+        btn_right_out.addEventListener('click',function(){self.right_out()})
+      }
+}
+    window['in_or_out']=in_or_out
+}())
+  
+  var go=new in_or_out([1,2,3])
+
+</script>
+  
+</body>
+</html>
