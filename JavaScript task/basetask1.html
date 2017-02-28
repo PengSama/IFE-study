@@ -38,25 +38,27 @@
   }
 
   in_or_out.prototype={
+    //左侧入函数
         left_in:function(){
         var ele=this.get_value()
         this.append_render(ele,'left')
 
       },
 
+    //右侧入函数
       right_in:function(){
         var ele=this.get_value()
         this.append_render(ele,'right')
       },
-
+    //左侧出函数
       left_out:function(){
         this.delete_render('left')
       },
-
+    //右侧出函数
       right_out:function(){
         this.delete_render('right')
       },
-
+    //添加元素到ul中
       append_render:function(ele,dir){
         var content=document.getElementById('content')
           var l=document.createElement('li')
@@ -67,6 +69,7 @@
             content.appendChild(l)
           }
       },
+      //点击左侧出、右侧出，删除相应位置的元素
       delete_render:function(dir){
         var content=document.getElementById('content')
         if(dir==='left' && content.firstChild){
@@ -81,21 +84,21 @@
           alert(`删上瘾了？？`)
         }
       },
-
+      //获取input的输入值
       get_value:function(){
         var inp=document.getElementById('input')
         var value=inp.value
         inp.value=''
         return value
       },
-
+      // 对整个ul添加点击事件，e。target为触发点击事件的元素
       add_event:function(content){
         content.addEventListener('click',function(e){
           var eve=e.target
           content.removeChild(eve)
         })
       },
-
+      //初始化渲染，渲染开始实例化时输入的数据
       render:function(arr){
         var content=document.getElementById('content')
           if(content.firstChild.nodeType===3){
@@ -108,7 +111,7 @@
         }
        this.add_event(content)
       },
-
+      //初始化函数，定义了按钮的点击事件
       init:function(arr){
         this.render(arr)
         var self=this
@@ -122,10 +125,10 @@
         btn_right_out.addEventListener('click',function(){self.right_out()})
       }
 }
-    window['in_or_out']=in_or_out
+    window['in_or_out']=in_or_out//将构造函数挂在window对象上
 }())
   
-  var go=new in_or_out([1,2,3])
+  var go=new in_or_out([1,2,3])//实例化构造函数
 
 </script>
   
