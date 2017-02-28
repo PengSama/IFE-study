@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>basetask1</title>
+  <style type="text/css">
+    #content{
+      position: absolute;
+      list-style-type: none;
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    #content li{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 25px;
+      background-color: skyblue;
+      color: white;
+      margin: 0 5px 5px 0;
+    }
+  </style>
+</head>
+<body>
+<input type="text" id="input">
+<button id="left-in">左侧入</button>
+<button id="right-in" style="margin-right:100px;">右侧入</button>
+<button id="left-out">左侧出</button>
+<button id="right-out">右侧出</button>
+<button id="sort">排序</button>
+<ul id="content">
+</ul>
+<script type="text/javascript">
+(function(){
+  var in_or_out=function(obj){
+    this.arr=obj||[]
+    this.init(this.arr)
+    this.counter=this.arr.length
+  }
+
+  in_or_out.prototype={
+  	    //使用正则判断10-100的输入是否匹配，counter用来限制输入个数
+        left_in:function(content){
+        var ele=this.get_value()
+        var patt=/^([1-9]\d|100)$/
+        if(!(patt.test(ele)) || this.counter>60)return alert('请输入10-100之间的整数，或数据个数以到60个')
+        this.append_render(content,ele,'left')
+        this.counter++
+
+      },
+
+      right_in:function(content){
+        var ele=this.get_value()
+        var patt=/^([1-9]\d|100)$/
+        if(!(patt.test(ele)) || this.counter>60)return alert('请输入10-100之间的整数，或数据个数以到60个')
+        this.append_render(content,ele,'right')
+        this.counter++
+      },
+
+      left_out:function(content){
+        this.delete_render(content,'left')
+      },
+
+      right_out:function(content){
+        this.delete_render(content,'right')
+      },
+
+      append_render:function(content,ele,dir){
+          var l=document.createElement('li')
+          l.innerHTML=ele
+          //使用高度表示数值的大小
+          l.style.height=`${ele/100*300}px`
+          if(dir==='left'){
+            content.insertBefore(l,content.childNodes[0])
+          }else if(dir==='right'){
+            content.appendChild(l)
+          }
+      },
+      delete_render:function(content,dir){
+        if(dir==='left' && content.firstChild){
+          let val=content.firstChild.textContent
+          content.removeChild(content.firstChild)
+          alert(`左侧删除了：${val}`)
+        }else if(dir==='right' && content.lastChild){
+          let val=content.lastChild.textContent
+          content.removeChild(content.lastChild)
+          alert(`右侧删除了：${val}`)
+        }else{
+          alert(`删上瘾了？？`)
+        }
+      },
+
+      get_value:function(){
+        var inp=document.getElementById('input')
+        var value=inp.value
+        inp.value=''
+        return value
+      },
+      
+      add_event:function(content){
+        content.addEventListener('click',function(e){
+          var eve=e.target
+          eve===content? alert('请点击蓝色区域'):content.removeChild(eve)//判断是否点击为ul列表
+        })
+      },
+      //排序时重新渲染ul列表
+      render:function(arr,content){
+          if(content.firstChild && content.firstChild.nodeType===3){
+            content.removeChild(content.firstChild)
+          }
+          while(content.hasChildNodes()){
+          	content.removeChild(content.firstChild)
+          }
+        for(var i=0;i<arr.length;i++){
+          var l=document.createElement('li')
+          l.innerHTML=arr[i]
+          l.style.height=`${arr[i]/100*300}px`
+          content.appendChild(l)
+        } 
+      },
+      //排序函数，获取存在li值的从大到小排序的数组
+      sort:function(content){
+          var len=content.childNodes
+          var sortArr=[]
+          for(var i=0;i<len.length;i++){
+             sortArr.push(len[i].textContent)
+          }
+          sortArr.sort(function(a,b){
+          	return b-a
+          })
+          this.render(sortArr,content)
+      },
+
+      init:function(arr){
+      	var content=document.getElementById('content')
+        this.render(arr,content)
+        this.add_event(content)
+        var self=this
+        var btn_left_in=document.getElementById('left-in')
+        var btn_right_in=document.getElementById('right-in')
+        var btn_left_out=document.getElementById('left-out')
+        var btn_right_out=document.getElementById('right-out')
+        var btn_sort=document.getElementById('sort')
+        btn_left_in.addEventListener('click',function(){self.left_in(content)})
+        btn_right_in.addEventListener('click',function(){self.right_in(content)})
+        btn_left_out.addEventListener('click',function(){self.left_out(content)})
+        btn_right_out.addEventListener('click',function(){self.right_out(content)})
+        btn_sort.addEventListener('click',function(){self.sort(content)})
+      }
+}
+    window['in_or_out']=in_or_out
+}())
+  
+  var go=new in_or_out([11,22,33,44])
+
+</script>
+  
+</body>
+</html>
