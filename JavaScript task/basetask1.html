@@ -5,10 +5,12 @@
   <title>basetask1</title>
   <style type="text/css">
     #content{
+      position: absolute;
       list-style-type: none;
       display: flex;
       justify-content: flex-start;
       flex-wrap: wrap;
+      padding: 0;
     }
     #content li{
       display: flex;
@@ -18,7 +20,7 @@
       height: 50px;
       background-color: skyblue;
       color: white;
-      margin: 0 5px 5px 0;
+      border:5px solid white;
     }
   </style>
 </head>
@@ -39,28 +41,27 @@
 
   in_or_out.prototype={
     //左侧入函数
-        left_in:function(){
+        left_in:function(content){
         var ele=this.get_value()
-        this.append_render(ele,'left')
+        this.append_render(ele,'left',content)
 
       },
 
     //右侧入函数
-      right_in:function(){
+      right_in:function(content){
         var ele=this.get_value()
-        this.append_render(ele,'right')
+        this.append_render(ele,'right',content)
       },
     //左侧出函数
-      left_out:function(){
-        this.delete_render('left')
+      left_out:function(content){
+        this.delete_render('left',content)
       },
     //右侧出函数
-      right_out:function(){
-        this.delete_render('right')
+      right_out:function(content){
+        this.delete_render('right',content)
       },
     //添加元素到ul中
-      append_render:function(ele,dir){
-        var content=document.getElementById('content')
+      append_render:function(ele,dir,content){
           var l=document.createElement('li')
           l.innerHTML=ele
           if(dir==='left'){
@@ -70,8 +71,7 @@
           }
       },
       //点击左侧出、右侧出，删除相应位置的元素
-      delete_render:function(dir){
-        var content=document.getElementById('content')
+      delete_render:function(dir,content){
         if(dir==='left' && content.firstChild){
           let val=content.firstChild.textContent
           content.removeChild(content.firstChild)
@@ -91,38 +91,39 @@
         inp.value=''
         return value
       },
-      // 对整个ul添加点击事件，e。target为触发点击事件的元素
+      // 对整个ul添加点击事件，e.target为触发点击事件的元素
       add_event:function(content){
         content.addEventListener('click',function(e){
           var eve=e.target
-          content.removeChild(eve)
+          eve===content? alert('请点击蓝色区域'):content.removeChild(eve)//点击ul时不删除任何东西
         })
       },
-      //初始化渲染，渲染开始实例化时输入的数据
-      render:function(arr){
-        var content=document.getElementById('content')
+      //初始化渲染，渲染实例化时输入的数据
+      render:function(arr,content){
           if(content.firstChild.nodeType===3){
-            content.removeChild(content.firstChild)
+            content.removeChild(content.firstChild)//删除ul与li之间的文本节点
           }
         for(var i=0;i<arr.length;i++){
           var l=document.createElement('li')
           l.innerHTML=arr[i]
-          content.appendChild(l)
+          content.appendChild(l)//循环添加队列
         }
-       this.add_event(content)
+       
       },
       //初始化函数，定义了按钮的点击事件
       init:function(arr){
-        this.render(arr)
+        var content=document.getElementById('content')//常用的DOM节点获取一次，以后当做参数传入函数
+        this.render(arr,content)//初始化函数
+        this.add_event(content)//为ul增加点击事件
         var self=this
         var btn_left_in=document.getElementById('left-in')
         var btn_right_in=document.getElementById('right-in')
         var btn_left_out=document.getElementById('left-out')
         var btn_right_out=document.getElementById('right-out')
-        btn_left_in.addEventListener('click',function(){self.left_in()})
-        btn_right_in.addEventListener('click',function(){self.right_in()})
-        btn_left_out.addEventListener('click',function(){self.left_out()})
-        btn_right_out.addEventListener('click',function(){self.right_out()})
+        btn_left_in.addEventListener('click',function(){self.left_in(content)})
+        btn_right_in.addEventListener('click',function(){self.right_in(content)})
+        btn_left_out.addEventListener('click',function(){self.left_out(content)})
+        btn_right_out.addEventListener('click',function(){self.right_out(content)})
       }
 }
     window['in_or_out']=in_or_out//将构造函数挂在window对象上
