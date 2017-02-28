@@ -61,10 +61,12 @@
 
       left_out:function(content){
         this.delete_render(content,'left')
+        this.counter--
       },
 
       right_out:function(content){
         this.delete_render(content,'right')
+        this.counter--
       },
 
       append_render:function(content,ele,dir){
