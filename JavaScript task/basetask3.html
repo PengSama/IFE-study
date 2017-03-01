@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>basetask1</title>
+  <style type="text/css">
+    #content{
+      position: absolute;
+      list-style-type: none;
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      padding: 0;
+    }
+    #content li{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: 50px;
+      height: 50px;
+      background-color: skyblue;
+      color: white;
+      border:5px solid white;
+    }
+    #content .red{
+    	background-color: red;
+    }
+    #exp,pre{
+    	position: fixed;
+    	top: 10px;
+    	left: 30%;
+    }
+  </style>
+</head>
+<body>
+<textarea id="input" cols="30" rows="10" maxlength="60"></textarea>
+<button id="left-in">左侧入</button>
+<button id="right-in" style="margin-right:100px;">右侧入</button>
+<button id="left-out">左侧出</button>
+<button id="right-out">右侧出</button>
+
+
+<input type="text" id="search" style="margin-left:100px;">
+<button id="search_btn">搜索</button>
+<ul id="content">
+</ul>	
+	<pre id='exp'>
+	    实例化时可以传入数组arr，以及分隔符patt格式如下
+		{
+		arr：[/*array*/],
+		patt:/*string unicode*/
+		}
+	</pre>
+
+<script type="text/javascript">
+(function(){
+  var in_or_out=function({arr,patt}){
+    this.arr=arr||[] //初始化时的数组
+    this.patt=patt  //自定义间隔符
+    this.init(this.arr)
+   
+  }
+
+  in_or_out.prototype={
+    //左侧入函数
+       left_in:function(content){
+    	this.clear(content)
+        var ele=this.get_value()
+        this.append_render(ele,'left',content)
+      },
+
+    //右侧入函数
+      right_in:function(content){
+      	this.clear(content)
+        var ele=this.get_value()
+        this.append_render(ele,'right',content)
+      },
+    //左侧出函数
+      left_out:function(content){
+      	this.clear(content)
+        this.delete_render('left',content)
+      },
+    //右侧出函数
+      right_out:function(content){
+      	this.clear(content)
+        this.delete_render('right',content)
+      },
+    //添加元素到ul中
+      append_render:function(ele,dir,content){
+          if(dir==='left'){
+          	for(let i=0;i<ele.length;i++){
+          		var l=document.createElement('li')
+          		l.innerHTML=ele[i]
+          	    content.insertBefore(l,content.childNodes[0])
+          	} 
+          }else if(dir==='right'){
+          	for(let i=0;i<ele.length;i++){
+          		var l=document.createElement('li')
+          		l.innerHTML=ele[i]
+          		content.appendChild(l)
+          	} 
+          }       
+      },
+      //点击左侧出、右侧出，删除相应位置的元素
+      delete_render:function(dir,content){
+        if(dir==='left' && content.firstChild){
+          let val=content.firstChild.textContent
+          content.removeChild(content.firstChild)
+          alert(`左侧删除了：${val}`)
+        }else if(dir==='right' && content.lastChild){
+          let val=content.lastChild.textContent
+          content.removeChild(content.lastChild)
+          alert(`右侧删除了：${val}`)
+        }else{
+          alert(`删上瘾了？？`)
+        }
+      },
+      //获取input的输入值
+      get_value:function(){
+        var inp=document.getElementById('input')
+        var patt=this.patt||/\u3001|\u3002|\u0020|\t|\uff0c|\u002c|\n/
+        var value=inp.value.split(patt)//分别是（、 。 空格 制表符 ， , 换行符） 所有这些符号全部可以当做间隔，符号相连算一个使用
+        value=value.filter(function(val){
+        	return !(val==='')
+        })
+        inp.value=''
+        return value
+      },
+      // 对整个ul添加点击事件，e.target为触发点击事件的元素
+      add_event:function(content){
+        content.addEventListener('click',function(e){
+          var eve=e.target
+          eve===content? alert('请点击蓝色区域'):content.removeChild(eve)
+        })
+      },
+      //初始化渲染，渲染开始实例化时输入的数据
+      render:function(arr,content){
+          if(content.firstChild.nodeType===3){
+            content.removeChild(content.firstChild)
+          }
+        for(var i=0;i<arr.length;i++){
+          var l=document.createElement('li')
+          l.innerHTML=arr[i]
+          content.appendChild(l)
+        }
+       
+      },
+      //搜索函数，只是简单的字符串查找
+      search:function(content){
+      	this.clear(content)
+      	var search_text=document.getElementById('search').value
+      	var len=content.childNodes.length
+      	for(var i=0;i<len;i++){
+      		if(!(content.childNodes[i].textContent.indexOf(search_text)===-1)){
+      			content.childNodes[i].setAttribute('class','red')
+      		}
+      	}       
+      },
+      //清除搜索后的标记
+      clear:function(content){
+      	var len=content.childNodes.length
+      	for(var i=0;i<len;i++){
+      		content.childNodes[i].setAttribute('class','')
+      	}
+      },
+      //初始化函数，定义了按钮的点击事件
+      init:function(arr){
+      	var content=document.getElementById('content')
+        this.render(arr,content)
+        this.add_event(content)
+        var self=this
+        var btn_left_in=document.getElementById('left-in')
+        var btn_right_in=document.getElementById('right-in')
+        var btn_left_out=document.getElementById('left-out')
+        var btn_right_out=document.getElementById('right-out')
+        var btn_search=document.getElementById('search_btn')
+        btn_left_in.addEventListener('click',function(){self.left_in(content)})
+        btn_right_in.addEventListener('click',function(){self.right_in(content)})
+        btn_left_out.addEventListener('click',function(){self.left_out(content)})
+        btn_right_out.addEventListener('click',function(){self.right_out(content)})
+        btn_search.addEventListener('click',function(){self.search(content)})
+      }
+}
+    window['in_or_out']=in_or_out//将构造函数挂在window对象上
+}())
+  
+  var go=new in_or_out({
+  	arr:[1,2,3]
+  })//实例化构造函数
+
+</script>
+  
+</body>
+</html>
