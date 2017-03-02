@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>BST</title>
+	<style type="text/css">
+		div{
+			display: flex;
+			margin: 0;
+			padding: 0;
+			border:2px solid #000;
+			justify-content: space-around;
+			align-items: center;
+			background-color: #fff;
+		}
+		#bst{
+			width: 400px;
+			height: 100px;
+		}
+		.second{
+			width: 185px;
+			height: 75px;
+		}
+		.third{
+            width: 80px;
+            height: 50px; 
+		}
+		.fourth{
+			width: 30px;
+			height: 25px;
+		}
+		.skyblue{
+			background-color: skyblue;
+		}
+	</style>
+</head>
+<body>
+<div id="bst"><div class="second"><div class="third"><div class="fourth"></div><div class="fourth"></div></div><div class="third"><div class="fourth"></div><div class="fourth"></div></div></div><div class="second"><div class="third"><div class="fourth"></div><div class="fourth"></div></div><div class="third"><div class="fourth"></div><div class="fourth"></div></div></div></div>
+<section style="margin-top: 20px;" id="section"><button id="preorder">前序遍历</button><button id="inorder">中序遍历</button><button id="postorder">后序遍历</button></section>
+
+<script type="text/javascript">
+(function(){
+	var BST=function(){
+		var root=document.getElementById('bst')
+        this.init(root)
+        this.arr=[]
+        this.lastnode=null
+
+	}
+	//前序遍历
+	BST.prototype.preorder=function(root){
+		var self=this
+		if(root){
+			self.arr.push(root)
+			self.preorder(root.childNodes[0])
+            self.preorder(root.childNodes[1])
+		}	
+	}
+	//中序遍历
+	BST.prototype.inorder=function(root){
+		var self=this
+		if(root){ 
+            self.inorder(root.childNodes[0])
+            self.arr.push(root)
+            self.inorder(root.childNodes[1])
+		}	
+	}
+	//后序遍历
+	BST.prototype.postorder=function(root){
+		var self=this
+		if(root){
+            self.postorder(root.childNodes[0])
+            self.postorder(root.childNodes[1])
+            self.arr.push(root)
+		}	
+	}
+	//遍历数后显示
+	BST.prototype.show=function(section){
+		var self=this
+		for(var i=0; i<self.arr.length; i++){
+                 setTimeout(function(j){//避免闭包获取外部i，重新传入参数i，获得值的传递
+                 	return function(){
+                 		if(j==self.arr.length-1){
+                 			self.ready(section)
+                 		}
+                 		if(self.lastnode){
+                            self.lastnode.style.backgroundColor="#fff";
+                        }
+                        self.arr[j].style.backgroundColor="skyblue";
+                        self.lastnode=self.arr[j];
+                 	}         
+                }(i),i*500)//循环产生函数，每个函数执行时间增加500ms
+            }
+            
+	}
+	//重置函数
+	BST.prototype.reset=function(){
+		this.arr=[]
+		this.lastnode?this.lastnode.style.backgroundColor='#fff':null
+	}
+	//开始遍历后禁止点击按钮
+	BST.prototype.forbid=function(section){
+         for(var i=0;i<section.childNodes.length;i++){
+         	section.childNodes[i].setAttribute('disabled','true')
+         }
+	}
+	//遍历完成后恢复按钮点击
+	BST.prototype.ready=function(section){
+         for(var i=0;i<section.childNodes.length;i++){
+         	section.childNodes[i].removeAttribute('disabled')
+         }
+	}
+	//初始化函数，获取节点，设置点击监听事件
+	BST.prototype.init=function(root){
+		var self=this
+		var pre=document.getElementById('preorder')
+		var infix=document.getElementById('inorder')
+		var post=document.getElementById('postorder')
+		var section=document.getElementById('section')
+		pre.addEventListener('click',function(){
+            self.forbid(section)
+			self.reset()
+			self.preorder(root)
+			self.show(section)
+		})
+		infix.addEventListener('click',function(){
+			self.forbid(section)
+			self.reset()
+			self.inorder(root)
+			self.show(section)
+		})
+		post.addEventListener('click',function(){
+			self.forbid(section)
+			self.reset()
+			self.postorder(root)
+			self.show(section)
+		})
+
+	}
+     window['BST']=BST
+
+})()
+    var go=new BST()
+</script>
+
+
+</body>
+</html>
