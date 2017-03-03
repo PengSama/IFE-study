@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>BST</title>
+	<style type="text/css">
+		div{
+			display: flex;
+			margin: 0;
+			padding: 0;
+			border:2px solid #000;
+			justify-content: space-around;
+			align-items: center;
+			background-color: #fff;
+			font-size: 10px;
+		}
+		#bst{
+			width: 1200px;
+			height: 150px;
+		}
+		.second{
+			width: 40%;
+			height: 80%;
+		}
+		.third{
+            width: 40%;
+            height: 80%; 
+		}
+		.fourth{
+			width: 15%;
+			height: 80%;
+		}
+		.fifth{
+			width: 40%;
+			height: 50%;
+		}
+		.skyblue{
+			background-color: skyblue;
+		}
+	</style>
+</head>
+<body>
+<div id="bst">room
+	<div class="second">parlour
+		<div class="third" style="width: 220px;">table
+			<div class="fourth">pen</div>
+			<div class="fourth">book</div>
+			<div class="fourth">friut</div>
+			<div class="fourth">cell</div>
+		</div>
+		<div class="third" style="width: 50px;">sofa</div>
+		<div class="third" style="width: 120px;">TVtable
+			<div class="fourth">TV</div>
+			<div class="fourth">CD</div>
+		</div>
+	</div>
+	<div class="second">bedroom
+		<div class="third">toilet
+			<div class="fourth">mir</div>
+			<div class="fourth" style="width: 30%;">woman</div>
+			<div class="fourth">door</div>
+		</div>
+		<div class="third">bed
+			<div class="fourth" style="width: 35%;">man
+				<div class="fifth">TT</div>
+			</div>
+			<div class="fourth" style="width: 30%;">camera</div>
+		</div>
+	</div>
+	<div class="second" style="width: 150px;">balcony</div>
+</div>
+<section style="margin-top: 20px;" id="section">
+	<button id="preorder">前序遍历</button>
+	<button id="postorder">后序遍历</button>
+	<button id='reset'>reset</button>
+	<input type="search" id="search">
+	<button id="search_btn">搜索</button>
+</section>
+<script type="text/javascript">
+(function(){
+	var BST=function(){
+		var root=document.getElementById('bst') 
+        this.arr=[]
+        this.lastnode=null
+        this.find=false//找到值后设置为true
+        this.searching=false//搜索时设置为true，普通遍历时为false
+        this.init(root)
+
+	}
+	//前序遍历
+	BST.prototype.preorder=function(root,section,val){
+		var self=this
+		if(root){
+			self.arr.push(root)
+			if(root.innerText.split('\n')[0]===val){
+				self.find=true
+			}
+			for(var i=0;i<root.children.length;i++){
+				if(self.find===true) return//找到值后将后面递归函数全部返回
+				self.preorder(root.children[i],section,val)
+			}
+		}	
+	}
+
+	//后序遍历
+	BST.prototype.postorder=function(root){
+		var self=this
+		if(root){
+           for(var i=0;i<root.children.length;i++){
+				self.postorder(root.children[i])
+			}
+            self.arr.push(root)
+		}	
+	}
+	//遍历数后显示
+	BST.prototype.show=function(section){
+		var self=this
+		for(var i=0; i<self.arr.length; i++){
+             setTimeout(function(j){//避免闭包获取外部i，重新传入参数i，获得值的传递
+             	return function(){
+             		if(j==self.arr.length-1){
+             			self.ready(section)
+             		}
+             		if(self.lastnode){
+                        self.lastnode.style.backgroundColor="#fff"
+                    }
+                    self.arr[j].style.backgroundColor="skyblue"
+                    self.lastnode=self.arr[j]
+             	}         
+            }(i),i*500)//循环产生函数，每个函数执行时间增加500ms
+        }
+        //判断是否找到以及是否是搜索遍历
+        if(!this.find && self.searching){
+        	setTimeout(function(){
+        		alert("can't find")
+        	},i*500)
+        }           
+	}
+	//重置函数
+	BST.prototype.reset=function(){
+		this.lastnode?this.lastnode.style.backgroundColor='#fff':null
+		this.arr=[]
+		this.find=false
+		this.searching=false
+	}
+	//开始遍历后禁止点击按钮
+	BST.prototype.forbid=function(section){
+         for(var i=0;i<section.children.length;i++){
+         	section.children[i].setAttribute('disabled','true')
+         }
+	}
+	//遍历完成后恢复按钮点击
+	BST.prototype.ready=function(section){
+         for(var i=0;i<section.children.length;i++){
+         	section.children[i].removeAttribute('disabled')
+         }
+	}
+	//初始化函数，获取节点，设置点击监听事件
+	BST.prototype.init=function(root){
+		var self=this
+		var pre=document.getElementById('preorder')
+		var post=document.getElementById('postorder')
+		var section=document.getElementById('section')
+		var res=document.getElementById('reset')
+		var search=document.getElementById('search')
+		var search_btn=document.getElementById('search_btn')
+		search_btn.addEventListener('click',function(){
+			self.forbid(section)
+			self.reset()
+			self.searching=true
+            self.preorder(root,section,search.value)
+            self.show(section)
+            
+		})
+		res.addEventListener('click',function(){
+			self.reset()
+		})
+		pre.addEventListener('click',function(){
+            self.forbid(section)
+			self.reset()
+			self.preorder(root,section)
+			self.show(section)
+		})
+		post.addEventListener('click',function(){
+			self.forbid(section)
+			self.reset()
+			self.postorder(root)
+			self.show(section)
+		})
+
+	}
+     window['BST']=BST
+
+})()
+    var go=new BST()
+</script>
+
+
+</body>
+</html>
