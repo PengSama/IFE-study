@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>form1</title>
+	<style type="text/css">
+		div,input,button,p{
+			margin: 0;
+			padding: 0;
+		}
+	    #content{
+	    	display: flex;
+	    	flex-direction: column;
+	    	justify-content: flex-start;
+	    	align-items: flex-end;
+	    	margin: 200px 500px 0 0;
+	    }
+	    input{
+	    	width: 300px;
+	    	height: 46px;
+	    	border: 2px solid #c8c8c8;
+	    	border-radius: 5px;
+	    	margin:0 0 5px 10px; 
+	    	outline: none;
+	    	font-size: 20px;
+	    }
+	    input:focus{
+	    	border:2px solid skyblue;
+	    }
+	    label{
+	    	font-size: 22px;
+	    	line-height: 46px;
+	    }
+	    button{
+	    	width: 70px;
+	    	height: 35px;
+	    	border: none;
+	    	border-radius: 5px;
+	    	background-color: skyblue;
+	    	color: #fff;
+	    	outline: none;
+	    	cursor: pointer;
+	    }
+	    button:hover{
+	    	background-color: green;
+	    }
+	    .red{
+	    	border: 2px solid red;
+	    }
+	    .green{
+	    	border: 2px solid green;
+	    }
+	</style>
+</head>
+<body>
+<div id='content'>
+	<div>
+		<label for="name">名称</label>
+		<input type="text" id="name">
+	</div>
+	<div id="name_notice"></div>
+	<div>
+		<label for="password">密码</label>
+		<input type="password" id="password">
+	</div>
+	<div id="password_notice"></div>
+	<div>
+		<label for="repassword">密码确认</label>
+		<input type="password" id="repassword">
+	</div>
+	<div id="repassword_notice"></div>
+	<div>
+		<label for="email">邮箱</label>
+		<input type="email" id="email">
+	</div>
+	<div id="email_notice"></div>
+	<div>
+		<label for="tel">手机</label>
+		<input type="tel" id="tel">
+	</div>
+	<div id="tel_notice"></div>
+	<button id="test">提交</button>
+</div>
+<script type="text/javascript">
+	(function(){
+		var Validata=function(){
+			this.init()
+		}		
+		Validata.prototype.getById=function(id){
+			return document.getElementById(id)
+		}
+		//检验字符串长度函数
+		Validata.prototype.strlen=function(val){
+			var len=0;
+			for(var i=0;i<val.length;i++){
+				var c=val.charCodeAt(i)
+				if((c>=0x0001 && c<=0x007e) || (0xff60<=c && c<=0xff9f)){
+					len++
+				}else{
+					len+=2
+				}
+			}
+			return len	
+		}
+		//名称输入验证函数
+		Validata.prototype.nameCheck=function(name,name_notice){
+			var value=name.value.trim()
+			if(!value){
+				name.setAttribute('class','red')
+				name_notice.innerHTML=`<p style="color:red;">姓名不能为空</p>`
+				return false
+			}else if(this.strlen(value)>16 || this.strlen(value)<4){
+				name.setAttribute('class','red')
+				name_notice.innerHTML=`<p style="color:red;">字符数需要在4-16之间</p>`
+				return false
+			}else{
+				name.setAttribute('class','green')
+				name_notice.innerHTML=`<p style="color:green;">名称格式正确</p>`
+				return true
+			}
+		}
+		//密码输入提示函数
+		Validata.prototype.passwordAttent=function(password,password_notice){
+			var value=password.value.trim()
+			if(!value){
+				password_notice.innerHTML=`<p style="color:#c8c8c8;">请输入密码，6-16位</p>`
+			}
+		}
+		//重复密码输入提示函数
+		Validata.prototype.repasswordAttent=function(repassword,repassword_notice){
+			var value=repassword.value.trim()
+			if(!value){
+				repassword_notice.innerHTML=`<p style="color:#c8c8c8;">再次输入相同的密码</p>`
+			}
+		}
+		//邮箱输入提示函数
+		Validata.prototype.emailAttent=function(email,email_notice){
+			var value=email.value.trim()
+			if(!value){
+				email_notice.innerHTML=`<p style="color:#c8c8c8;">请输入邮箱</p>`
+			}
+		}
+		//手机号码输入提示函数
+		Validata.prototype.telAttent=function(tel,tel_notice){
+			var value=tel.value.trim()
+			if(!value){
+				tel_notice.innerHTML=`<p style="color:#c8c8c8;">请输入手机号码</p>`
+			}
+		}
+		//名称输入提示函数
+		Validata.prototype.nameAttent=function(name,name_notice){
+			var value=name.value.trim()
+			if(!value){
+				name_notice.innerHTML=`<p style="color:#c8c8c8;">必填，长度为4-16个字符</p>`
+			}
+		}
+		//密码输入验证函数
+		Validata.prototype.passwordCheck=function(password,password_notice){
+			var value=password.value.trim()
+			if(!value){
+				password.setAttribute('class','red')
+				password_notice.innerHTML=`<p style="color:red;">密码不能为空</p>`
+				return false
+			}else if(this.strlen(value)>16 || this.strlen(value)<6){
+				password.setAttribute('class','red')
+				password_notice.innerHTML=`<p style="color:red;">密码长度应该在6-16位之间</p>`
+				return false
+			}else{
+				password.setAttribute('class','green')
+				password_notice.innerHTML=`<p style="color:green;">密码可用</p>`
+				return true
+			}
+		}
+		//重复密码输入验证函数
+		Validata.prototype.repasswordCheck=function(password,repassword,repassword_notice){
+			var value=password.value.trim()
+			var revalue=repassword.value.trim()
+			if(revalue===value && value.length>=6 &&value.length<=16){
+				repassword.setAttribute('class','green')
+				repassword_notice.innerHTML=`<p style="color:green;">密码相同</p>`
+				return true
+			}else if(revalue!==value){
+				repassword.setAttribute('class','red')
+				repassword_notice.innerHTML=`<p style="color:red;">输入密码请与第一次一致</p>`
+				return false
+			}else{
+				repassword.setAttribute('class','red')
+				repassword_notice.innerHTML=`<p style="color:red;">密码长度不匹配</p>`
+				return false
+			}
+		}
+		//邮箱输入验证函数
+		Validata.prototype.emailCheck=function(email,email_notice){
+			var value=email.value.trim()
+			var reg=/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/
+			if(!reg.test(value)){
+				email.setAttribute('class','red')
+				email_notice.innerHTML=`<p style="color:red;">邮箱格式不匹配</p>`
+				return false
+			}else{
+				email.setAttribute('class','green')
+				email_notice.innerHTML=`<p style="color:green;">邮箱格式正确</p>`
+				return true
+			}
+		}
+		//手机号码输入验证函数
+		Validata.prototype.telCheck=function(tel,tel_notice){
+			var value=tel.value.trim()
+			var reg=/^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/
+			if(!reg.test(value)){
+				tel.setAttribute('class','red')
+				tel_notice.innerHTML=`<p style="color:red;">手机号码格式不匹配</p>`
+				return false
+			}else{
+				tel.setAttribute('class','green')
+				tel_notice.innerHTML=`<p style="color:green;">手机号码格式正确</p>`
+				return true
+			}
+		}
+		//初始换函数
+		Validata.prototype.init=function(){
+			var self=this
+			var test=self.getById('test')
+			var name=self.getById('name')
+			var password=self.getById('password')
+			var repassword=self.getById('repassword')
+			var email=self.getById('email')
+			var tel=self.getById('tel')
+			var content=self.getById('content')
+			var name_notice=self.getById('name_notice')
+			var password_notice=self.getById('password_notice')
+			var repassword_notice=self.getById('repassword_notice')
+			var email_notice=self.getById('email_notice')
+			var tel_notice=self.getById('tel_notice')
+			//监听提交按钮点击事件
+			test.addEventListener('click',function(){
+				let nc=self.nameCheck(name,name_notice)
+				let pc=self.passwordCheck(password,password_notice)
+				let rc=self.repasswordCheck(password,repassword,repassword_notice)
+				let ec=self.emailCheck(email,email_notice)
+				let tc=self.telCheck(tel,tel_notice)
+				if(nc && pc && rc && ec && tc){
+					alert('提交成功')
+				}else{
+					alert('提交失败')
+				}
+			})
+			//监听父元素，使用事件委托获取失焦事件触发target
+			content.addEventListener('blur',function(e){
+				switch(e.target.id){
+					case 'name':
+					self.nameCheck(name,name_notice)
+					break
+					case 'password':
+					self.passwordCheck(password,password_notice)
+					break
+					case 'repassword':
+					self.repasswordCheck(password,repassword,repassword_notice)
+					break
+					case 'email':
+					self.emailCheck(email,email_notice)
+					break
+					case 'tel':
+					self.telCheck(tel,tel_notice)
+					break
+					default:null
+				}
+			},true)
+			//父元素设置聚焦事件，使用addEventListener第三个参数，达到事件捕获
+			content.addEventListener('focus',function(e){
+				switch(e.target.id){
+					case 'name':
+					self.nameAttent(name,name_notice)
+					break
+					case 'password':
+					self.passwordAttent(password,password_notice)
+					break
+					case 'repassword':
+					self.repasswordAttent(repassword,repassword_notice)
+					break
+					case 'email':
+					self.emailAttent(email,email_notice)
+					break
+					case 'tel':
+					self.telAttent(tel,tel_notice)
+					break
+					default:null
+				}
+			},true)
+
+		}
+		window['Validata']=Validata
+	})()
+	var validata=new Validata()
+</script>	
+</body>
+</html>
