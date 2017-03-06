@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>form1</title>
+	<style type="text/css">
+	    div{
+	    	position: fixed;
+	    	display: flex;
+	    	justify-content: flex-start;
+	    	align-items: center;
+	    	top: 200px;
+	    	left: 500px;
+	    }
+	    input{
+	    	width: 300px;
+	    	height: 46px;
+	    	border: 2px solid #c8c8c8;
+	    	border-radius: 5px;
+	    	margin: 0 10px; 
+	    	outline: none;
+	    	font-size: 20px;
+	    }
+	    input:focus{
+	    	border:2px solid skyblue;
+	    }
+	    label{
+	    	font-size: 26px;
+	    	line-height: 46px;
+	    }
+	    button{
+	    	width: 70px;
+	    	height: 46px;
+	    	border: none;
+	    	border-radius: 5px;
+	    	background-color: skyblue;
+	    	color: #fff;
+	    	outline: none;
+	    	cursor: pointer;
+	    }
+	    button:hover{
+	    	background-color: green;
+	    }
+	    #notice{
+	    	position: fixed;
+	    	left: 560px;
+	    	top: 250px;
+	    	color: #c8c8c8;
+	    	margin-top: 5px;
+	    	font-size: 20px;
+	    }
+	    .red{
+	    	border: 2px solid red;
+	    }
+	    .green{
+	    	border: 2px solid green;
+	    }
+	    p{
+	    	margin: 0;
+	    	padding: 0;
+	    }
+	</style>
+</head>
+<body>
+<div>
+	<label for="name">名称</label>
+	<input type="text" id="name" required>
+	<button id="test">验证</button>
+</div>
+<div id="notice">必填，长度为4-16个字符</div>
+<script type="text/javascript">
+	var test=document.getElementById('test')
+	var notice=document.getElementById('notice')
+	var node=document.getElementById('name')
+	test.addEventListener('click',function() {
+		var value=node.value.trim()
+		if(!value){
+			node.setAttribute('class','red')
+			notice.innerHTML=`<p style="color:red;">姓名不能为空</p>`
+		}else if(strlen(value)>16 || strlen(value)<4){
+			node.setAttribute('class','red')
+			notice.innerHTML=`<p style="color:red;">字符数需要在4-16之间</p>`
+		}else{
+			node.setAttribute('class','green')
+			notice.innerHTML=`<p style="color:green;">名称格式正确</p>`
+		}
+	})
+	function strlen(val){
+		var len=0;
+		for(var i=0;i<val.length;i++){
+			var c=val.charCodeAt(i)
+			if((c>=0x0001 && c<=0x007e) || (0xff60<=c && c<=0xff9f)){
+				len++
+			}else{
+				len+=2
+			}
+		}
+		return len					
+	}
+</script>	
+</body>
+</html>
