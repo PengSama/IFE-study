@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>form3</title>
+	<style type="text/css">
+		.hidden{
+			display: none;
+		}
+	</style>
+</head>
+<body>
+<div id="content">
+	<div id="chose">
+		<input type="radio" name="career" id="in_school" checked><label for="in_school">在校生</label>
+		<input type="radio" name="career" id="out_school"><label for="out_school">非在校生</label>	
+	</div>
+<div id="school_list">
+	<label for="city">学校</label>
+	<select id="city">
+		<option value="beijing">北京</option>
+		<option value="shanghai">上海</option>
+		<option value="nanjing">南京</option>
+		<option value="suzhou">苏州</option>
+		<option value="hangzhou">杭州</option>
+	</select> 
+	<select id="school">
+		<option>北京大学</option>
+		<option>清华大学</option>
+		<option>北京航空航天大学</option>
+		<option>中国人民大学</option>
+		<option>北京师范大学</option>
+	</select>
+</div>
+<div id="job_list" class="hidden">
+	<label for="job_place">就业单位</label>
+	<input type="text" id="job_place">
+</div>
+</div>
+
+<script type="text/javascript">
+    var arr=[['beijing','北京大学','清华大学','北京航空航天大学','中国人民大学','北京师范大学'],['shanghai','上海大学','上海交通大学','复旦大学','华东理工大学'],['nanjing','南京理工大学','南京工业大学','南京航空航天大学','南京大学','东南大学','河海大学'],['suzhou','苏州大学','江苏大学'],['hangzhou','浙江大学','杭州电子科技大学','中国计量大学','浙江理工大学','浙江工业大学','杭州师范大学','杭州文理学院']]
+	var city=document.getElementById('city')
+	var school=document.getElementById('school')
+	var chose=document.getElementById('chose')
+	var in_school=document.getElementById('in_school')
+	var out_school=document.getElementById('out_school')
+	var school_list=document.getElementById('school_list')
+	var job_list=document.getElementById('job_list')
+	chose.addEventListener('click',function(e){
+		if(e.target.id==='in_school'){
+			school_list.removeAttribute('class')
+			job_list.setAttribute('class','hidden')
+		}else if(e.target.id==='out_school'){
+			job_list.removeAttribute('class')
+			school_list.setAttribute('class','hidden')
+		}
+	})
+	city.addEventListener('change',function(){
+		var list=listSchool(city.value)
+		render(list,school)
+	})
+	//获取地区对应的学校列表
+	function listSchool(val){
+		var list=[]
+		for(var i=0;i<arr.length;i++){
+			if(arr[i][0]===val){
+				list.push(arr[i])
+			}
+		}
+		return list
+	}
+	//渲染学校列表
+	function render(list,school){
+		for(let i=school.children.length;i>0;i--){
+			school.removeChild(school.children[i-1])
+		}
+		var opt=document.createElement('option')
+		for(let i=1;i<list[0].length;i++){
+			var opt=document.createElement('option')
+			opt.innerHTML=list[0][i]
+			school.appendChild(opt)
+		}
+	}
+</script>
+	
+</body>
+</html>
