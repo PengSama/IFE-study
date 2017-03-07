@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>form3</title>
+	<style type="text/css">
+		.up{
+			border-top: 10px solid red;
+			background-color: yellow;
+		}
+		.down{
+			border-bottom: 10px solid red;
+			background-color: yellow;
+		}
+		.left{
+			border-left: 10px solid red;
+			background-color: yellow;
+		}
+		.right{
+			border-right: 10px solid red;
+			background-color: yellow;
+		}
+		table{
+			display: inline-block;
+		}
+		td{
+			box-sizing: border-box;
+			width: 50px;
+			height: 50px;
+			text-align: center;
+			font-weight: bold;
+			border:1px solid #c8c8c8;
+		}
+		tbody tr:first-child td{
+			border-top: 2px solid #c8c8c8;
+		}
+		tbody tr td:last-child{
+			border-right: 2px solid #c8c8c8;
+		}
+		tbody tr:last-child td{
+			border-bottom: 2px solid #c8c8c8;
+		}
+		tbody tr td:first-child{
+			border-top: none;
+			border-left: none;
+			border-bottom: none;
+		}
+		/* 强迫症,嘿嘿 */
+	</style>
+</head>
+<body>
+	<div>
+		<table cellspacing="0">
+		<thead>
+			<tr>
+				<th></th>
+				<th>1</th>
+				<th>2</th>
+				<th>3</th>
+				<th>4</th>
+				<th>5</th>
+				<th>6</th>
+				<th>7</th>
+				<th>8</th>
+				<th>9</th>
+				<th>10</th>
+			</tr>
+		</thead>
+		<tbody id="content">
+			<tr>
+				<td>1</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+		</table>
+		<div style="display: inline-block;margin-left: 20px;">
+			<p>GO：向红色边所面向的方向前进一格</p>
+			<p>TUN LEF：向左转（逆时针旋转90度）</p>
+			<p>TUN RIG：向右转（顺时针旋转90度）</p>
+			<p>TUN BAC：向右转（旋转180度）</p>
+		</div>
+	</div>
+	<div style="margin-left: 200px;">
+		<input type="text" id="order">
+		<button id="order_btn">执行</button>
+	</div>
+<script type="text/javascript">
+	(function(){
+		let Movebox=function({x,y,dir}){
+			this.x=x||this.random()
+			this.y=y||this.random()
+			this.dir=dir||this.randomdir()
+			this.init()
+		}
+		//移动函数，参数为x，y坐标，方向dir，元素节点content
+		Movebox.prototype.go=function(x,y,dir,content){
+			let prex=x
+			let prey=y
+			switch(dir){
+				case 'left':
+				if(this.x-1<1){
+					alert('不能再往左了，已到边界')
+					return
+				}
+				this.x--
+				break
+				case 'up':
+				if(this.y-1<1){
+					alert('不能再往上了，已到边界')
+					return
+				}
+				this.y--
+				break
+				case 'right':
+				if(this.x+1>10){
+					alert('不能再往右了，已到边界')
+					return
+				}
+				this.x++
+				break
+				case 'down':
+				if(this.y+1>10){
+					alert('不能再往下了，已到边界')
+					return
+				}
+				this.y++
+				break
+				default:null
+			}
+			this.deleteRender(prex,prey,content)//除去前一个方块的颜色
+		}
+		//右转向函数
+		Movebox.prototype.turnRight=function(x,y,dir){
+			switch(dir){
+				case 'left':
+				this.dir='up'
+				break
+				case 'up':
+				this.dir='right'
+				break
+				case 'right':
+				this.dir='down'
+				break
+				case 'down':
+				this.dir='left'
+				break
+				default:null
+			}
+		}
+		//左转向函数
+		Movebox.prototype.turnLeft=function(x,y,dir){
+			switch(dir){
+				case 'left':
+				this.dir='down'
+				break
+				case 'up':
+				this.dir='left'
+				break
+				case 'right':
+				this.dir='up'
+				break
+				case 'down':
+				this.dir='right'
+				break
+				default:null
+			}
+		}
+		//反向转向函数
+		Movebox.prototype.turnBack=function(x,y,dir){
+			switch(dir){
+				case 'left':
+				this.dir='right'
+				break
+				case 'up':
+				this.dir='down'
+				break
+				case 'right':
+				this.dir='left'
+				break
+				case 'down':
+				this.dir='up'
+				break
+				default:null
+			}
+		}
+		//随机坐标发生器
+		Movebox.prototype.random=function(){
+			return Math.ceil(Math.random()*10)
+		}
+		//随机方向发生器
+		Movebox.prototype.randomdir=function(){
+			let dir
+			switch(Math.ceil(Math.random()*4)){
+				case 1:
+				dir='left'
+				break
+				case 2:
+				dir='right'
+				break
+				case 3:
+				dir='up'
+				break
+				case 4:
+				dir='down'
+				break
+				default:null
+			}
+			return dir
+		}
+		//渲染函数，执行命令时渲染
+		Movebox.prototype.render=function(x,y,dir,content){
+			content.children[y-1].children[x].setAttribute('class',dir)
+		}
+		//去除前一个节点的class属性
+		Movebox.prototype.deleteRender=function(prex,prey,content){
+			content.children[prey-1].children[prex].removeAttribute('class')
+		}
+		//初始化函数
+		Movebox.prototype.init=function(){
+			let self=this
+			let content=document.getElementById('content')
+			let order_btn=document.getElementById('order_btn')
+			let order=document.getElementById('order')
+			order_btn.addEventListener('click',function(){
+				let orderValue=order.value.trim()
+				switch(orderValue){
+					case 'GO':
+					self.go(self.x,self.y,self.dir,content)
+					break
+					case 'TUN LEF':
+					self.turnLeft(self.x,self.y,self.dir)
+					break
+					case 'TUN RIG':
+					self.turnRight(self.x,self.y,self.dir)
+					break
+					case 'TUN BAC':
+					self.turnBack(self.x,self.y,self.dir)
+					break
+					default:
+					alert('请输入正确指令')
+				}
+				self.render(self.x,self.y,self.dir,content)				
+			})
+			self.render(self.x,self.y,self.dir,content)//初始换渲染
+		}
+		window['Movebox']=Movebox
+	})()
+	/*
+	 *实例化，可以传入x，y坐标，以及方向参数dir
+	 *传入对象格式为{x：number（1-10），y：number（1-10），dir：string（‘left’，‘right’，‘up’，‘down’）}
+	 */
+	let move=new Movebox({})
+</script>
+
+	
+</body>
+</html>
