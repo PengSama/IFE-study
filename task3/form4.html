@@ -5,19 +5,19 @@
 	<title>form3</title>
 	<style type="text/css">
 		.up{
-			border-top: 10px solid red;
+			border-top: 10px solid red!important;
 			background-color: yellow;
 		}
 		.down{
-			border-bottom: 10px solid red;
+			border-bottom: 10px solid red!important;
 			background-color: yellow;
 		}
 		.left{
-			border-left: 10px solid red;
+			border-left: 10px solid red!important;
 			background-color: yellow;
 		}
 		.right{
-			border-right: 10px solid red;
+			border-right: 10px solid red!important;
 			background-color: yellow;
 		}
 		table{
@@ -45,7 +45,6 @@
 			border-left: none;
 			border-bottom: none;
 		}
-		/* 强迫症,嘿嘿 */
 	</style>
 </head>
 <body>
@@ -256,7 +255,7 @@
 			this.deleteRender(prex,prey,content)//除去前一个方块的颜色
 		}
 		//右转向函数
-		Movebox.prototype.turnRight=function(x,y,dir){
+		Movebox.prototype.turnRight=function(dir){
 			switch(dir){
 				case 'left':
 				this.dir='up'
@@ -274,7 +273,7 @@
 			}
 		}
 		//左转向函数
-		Movebox.prototype.turnLeft=function(x,y,dir){
+		Movebox.prototype.turnLeft=function(dir){
 			switch(dir){
 				case 'left':
 				this.dir='down'
@@ -292,7 +291,7 @@
 			}
 		}
 		//反向转向函数
-		Movebox.prototype.turnBack=function(x,y,dir){
+		Movebox.prototype.turnBack=function(dir){
 			switch(dir){
 				case 'left':
 				this.dir='right'
@@ -347,6 +346,7 @@
 			let content=document.getElementById('content')
 			let order_btn=document.getElementById('order_btn')
 			let order=document.getElementById('order')
+			self.render(self.x,self.y,self.dir,content)//初始化渲染
 			order_btn.addEventListener('click',function(){
 				let orderValue=order.value.trim()
 				switch(orderValue){
@@ -354,20 +354,19 @@
 					self.go(self.x,self.y,self.dir,content)
 					break
 					case 'TUN LEF':
-					self.turnLeft(self.x,self.y,self.dir)
+					self.turnLeft(self.dir)
 					break
 					case 'TUN RIG':
-					self.turnRight(self.x,self.y,self.dir)
+					self.turnRight(self.dir)
 					break
 					case 'TUN BAC':
-					self.turnBack(self.x,self.y,self.dir)
+					self.turnBack(self.dir)
 					break
 					default:
 					alert('请输入正确指令')
 				}
 				self.render(self.x,self.y,self.dir,content)				
-			})
-			self.render(self.x,self.y,self.dir,content)//初始换渲染
+			})			
 		}
 		window['Movebox']=Movebox
 	})()
